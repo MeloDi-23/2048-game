@@ -292,10 +292,10 @@ function init() {
     let records = readCookie();
     moveCount = parseInt(records.moveCount);
     score = parseInt(records.score);
-    if(!isNaN(moveCount)) {
+    if(isNaN(moveCount)) {
         moveCount = 0;
     }
-    if(!isNaN(score)) {
+    if(isNaN(score)) {
         score = 0;
     }
     if(records.array) {
