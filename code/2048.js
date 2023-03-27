@@ -229,6 +229,7 @@ function init() {
     actionList = new Array();
     createList = new Array();
     ready = true;
+    gameOver = false;
     divArray = new Array();
     moveCount = 0;
     score = 0;
@@ -287,8 +288,45 @@ function init() {
         e.preventDefault();
     }, {passive: false});
     map.init();
-    map.randPosition(2, 2);
+
+    let records = readCookie();
+    moveCount = parseInt(records.moveCount);
+    score = parseInt(records.score);
+    if(!isNaN(moveCount)) {
+        moveCount = 0;
+    }
+    if(!isNaN(score)) {
+        score = 0;
+    }
+    if(records.array) {
+        try {
+            map.content = JSON.parse(records.array);
+        } catch(err) {
+            // map.init();
+            map.randPosition(2, 2);
+        }
+    } else {
+        // map.init();
+        map.randPosition(2, 2);
+    }
     updateMap();
+}
+
+function saveMessage() {
+    document.cookie = `array = ${JSON.stringify(map.content)};`
+    document.cookie = `move = ${moveCount};`
+    document.cookie = `score = ${score};`;
+}
+function readCookie() {
+    let dic = {};
+    document.cookie.split(';').forEach(
+        e => {
+            m = e.match(/([_a-zA-Z0-9]+)\s*=\s*([\s\S]+)/);
+            if(m)
+                dic[m[1]] = m[2];
+        }
+    )
+    return dic;
 }
 
 function restart() {
@@ -330,7 +368,7 @@ function readKey(event) {
 
 function generate() {
     moveCount += 1;
-    gameOver = false;
+    // gameOver = false;
     let num = Math.random() > 0.25 ? 2 : 4;
     if(map.hasPosition()) {
         map.randPosition(1, num);
@@ -341,18 +379,18 @@ function generate() {
         gameOver = true;
     ready = false;
     function secToStr(s) {
-        h = parseInt(s/3600);
-        m = parseInt((s - 3600*h)/60);
+        h = Math.floor(s/3600);
+        m = Math.floor((s - 3600*h)/60);
         sec = s - m*60 - h*3600;
         str = '';
         if(h) {
-            str += h+'小时 ';
+            str += h+'h ';
         }
         if(m) {
-            str += m+'分钟 ';
+            str += m+'min ';
         }
         if(sec) {
-            str += sec+'秒';
+            str += sec+'s';
         }
         return str;
     }
@@ -361,15 +399,16 @@ function generate() {
         createList = new Array();
         updateMap();
         ready = true;
-        requestAnimationFrame(
-            ()=>{
-                if(gameOver) {
-                    alert(
-                        'game over\n你已经玩了'+secToStr(parseInt((performance.now()-startTime)/1000))+'休息一会吧'
-                    );
-                }
-            }
-        );
+        if(gameOver) {
+            ready = false;
+            setTimeout(() => {
+                alert(
+                    'Game Over!\nYou\'ve played for '+
+                    secToStr(Math.floor((performance.now()-startTime)/1000))+
+                    ', have a rest then.'
+                );
+            }, 200);
+        }
     });
 }
 
@@ -494,6 +533,5 @@ function drawAnimationByCSS(callBack=null) {
     }
 }
 
-
-
 window.onload = init;
+window.onbeforeunload = saveMessage;
