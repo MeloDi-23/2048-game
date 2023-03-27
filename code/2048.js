@@ -287,10 +287,10 @@ function init() {
     backgroundDiv.addEventListener("touchmove", (e)=>{
         e.preventDefault();
     }, {passive: false});
-    map.init();
 
+    map.init();
     let records = readCookie();
-    moveCount = parseInt(records.moveCount);
+    moveCount = parseInt(records.move);
     score = parseInt(records.score);
     if(isNaN(moveCount)) {
         moveCount = 0;
@@ -298,15 +298,31 @@ function init() {
     if(isNaN(score)) {
         score = 0;
     }
+    let isInt = (e) => !isNaN(e) && e === Math.floor(e);
+    let flag = false;
     if(records.array) {
+        flag = true;
         try {
-            map.content = JSON.parse(records.array);
+            let ar = JSON.parse(records.array);
+            OUT: for(let i = 0; i != ROW; ++i) {
+                for(let j = 0; j != COLUMN; ++j) {
+                    let n = ar[i][j];
+                    if(isInt(Math.log2(n))) {
+                        map.content[i][j] = n;
+                    } else {
+                        flag = false;
+                        break OUT;
+                    }
+                }
+            }
         } catch(err) {
-            // map.init();
+            flag = false;
+            map.init();
             map.randPosition(2, 2);
         }
-    } else {
-        // map.init();
+    }
+    if(!flag) {
+        map.init();
         map.randPosition(2, 2);
     }
     updateMap();
