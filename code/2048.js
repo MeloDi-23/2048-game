@@ -349,6 +349,7 @@ function restart() {
     actionList = new Array();
     createList = new Array();
     ready = true;
+    gameOver = false;
     map.init();
     map.randPosition(2, 2);
     updateMap();
