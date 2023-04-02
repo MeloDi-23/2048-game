@@ -338,8 +338,9 @@ function readCookie() {
     document.cookie.split(';').forEach(
         e => {
             m = e.match(/([_a-zA-Z0-9]+)\s*=\s*([\s\S]+)/);
-            if(m)
+            if(m) {
                 dic[m[1]] = m[2];
+            }
         }
     )
     return dic;
@@ -352,9 +353,9 @@ function restart() {
     gameOver = false;
     map.init();
     map.randPosition(2, 2);
-    updateMap();
     score = 0;
     moveCount = 0;
+    updateMap();
 }
 
 function makeMovement(direction) {
