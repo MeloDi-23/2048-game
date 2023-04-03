@@ -329,9 +329,14 @@ function init() {
 }
 
 function saveMessage() {
-    document.cookie = `array = ${JSON.stringify(map.content)};`
-    document.cookie = `move = ${moveCount};`
-    document.cookie = `score = ${score};`;
+    let date = new Date();
+    date.setDate(date.getDate() + 365);
+    console.log(date);
+    let timeString = 'expitres = ' + date.toUTCString();
+    console.log(timeString);
+    document.cookie = `array = ${JSON.stringify(map.content)};` + timeString;
+    document.cookie = `move = ${moveCount};` + timeString;
+    document.cookie = `score = ${score};` + timeString;
 }
 function readCookie() {
     let dic = {};
