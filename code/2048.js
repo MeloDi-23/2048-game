@@ -332,7 +332,7 @@ function saveMessage() {
     let date = new Date();
     date.setDate(date.getDate() + 365);
     console.log(date);
-    let timeString = 'expitres = ' + date.toUTCString();
+    let timeString = 'expires = ' + date.toUTCString();
     console.log(timeString);
     document.cookie = `array = ${JSON.stringify(map.content)};` + timeString;
     document.cookie = `move = ${moveCount};` + timeString;
